@@ -21,7 +21,6 @@
     .admin_image{
         width: 100px;
         object-fit: contain;
-        
 }
 </style>
 </head>

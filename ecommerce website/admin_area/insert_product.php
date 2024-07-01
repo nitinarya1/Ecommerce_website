@@ -1,10 +1,53 @@
 <?php
 include('../includes/connect.php');
+if(isset($_POST['insert_product'])){
 
+    $product_tile=$_POST['product_title'];
+    $description=$_POST['description'];
+    $product_keywords=$_POST['product_keywords'];
+    $product_category=$_POST['product_category'];
+    $product_brands=$_POST['product_brands'];
+    $product_price=$_POST['product_price'];
+    $product_status='true';
 
+    // accessing images
+    $product_image1=$_FILES['product_image1']['name'];
+    $product_image2=$_FILES['product_image2']['name'];
+    $product_image3=$_FILES['product_image3']['name'];
+    
+
+    
+    // accesing image temporary name
+    $temp_image1=$_FILES['product_image1']['tmp_name'];
+    $temp_image2=$_FILES['product_image2']['tmp_name'];
+    $temp_image3=$_FILES['product_image3']['tmp_name'];
+   
+
+    // checking empty condition
+    if($product_tile=='' or $description=='' or $product_keywords=='' or $product_category==''
+    or $product_brands=='' or $product_price=='' or  $product_image1=='' or  $product_image2==''
+    or  $product_image3==''  ){
+        echo "<script>alert('Please fill all the availble field')</script>";
+        exit();
+    }else{
+        move_uploaded_file($temp_image1,"./product_images/$product_image1");
+        move_uploaded_file($temp_image2,"./product_images/$product_image2");
+        move_uploaded_file($temp_image3,"./product_images/$product_image3");
+         
+
+        // insert query
+        $insert_product="insert into `products` (product_title,description,
+        product_keywords,category_id,brand_id,product_image1,product_image2,product_image3,product_price,date,status) values('$product_tile','$description',
+        '$product_keywords','$product_category','$product_brands',
+        '$product_image1','$product_image2','$product_image3','$product_price',NOW(),'$product_status')";
+        $result_query=mysqli_query($con,$insert_product);
+        if($result_query){
+            echo "<script>alert('Succeccfully inserted the product')</script>";   
+        }
+      }
+
+}
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,21 +78,21 @@ include('../includes/connect.php');
                 <input type="text" name="product_title" id="product_title" class="form-control" 
                 placeholder="Please Enter Your Product Title" autocomplete="off" required="required">
             </div>
-            <!-- discrption of the item -->
+            <!-- description of the item -->
             <div class="form-outline mb-4 w-50 m-auto">
-                <label for="descrption" class="form-label">Product Descrption</label>
-                <input type="text" name="descrption" id="descrption" class="form-control" 
-                placeholder="Please Enter Your Product Descrption" autocomplete="off" required="required">
+                <label for="description" class="form-label">Product Description</label>
+                <input type="text" name="description" id="description" class="form-control" 
+                placeholder="Please Enter Your Product Description" autocomplete="off" required="required">
             </div>
-            <!-- keyword for product -->
+            <!-- keywords for product -->
             <div class="form-outline mb-4 w-50 m-auto">
-                <label for="product_keyword" class="form-label">Product Keywords</label>
-                <input type="text" name="product_keyword" id="product_keyword" class="form-control" 
+                <label for="product_keywords" class="form-label">Product Keywords</label>
+                <input type="text" name="product_keywords" id="product_keywords" class="form-control" 
                 placeholder="Enter Keywords For Your Product" autocomplete="off" required="required">
             </div>
             <!-- categories -->
             <div class="form-outline mb-4 w-50 m-auto">
-               <select name="product_categories" id="" class="form-select">
+               <select name="product_category" id="" class="form-select">
                 <option value="">Select Category </option>
                 <?php
                      $select_query="Select * from `categories`";
@@ -58,9 +101,6 @@ include('../includes/connect.php');
                         $category_title=$row['category_title'];
                         $category_id=$row['category_id'];
                         echo "<option value='$category_id'>$category_title</option>";
-
-
-                    
 
                      }
 
@@ -81,9 +121,6 @@ include('../includes/connect.php');
                         $brand_title=$row['brand_title'];
                         $brand_id=$row['brand_id'];
                         echo "<option value='$brand_id'>$brand_title</option>";
-
-
-                    
 
                      }
 
@@ -113,19 +150,7 @@ include('../includes/connect.php');
                 required="required">
             </div>
 
-            <!-- img-4 -->
-            <div class="form-outline mb-4 w-50 m-auto">
-                <label for="product_image4" class="form-label">Product Image 4</label>
-                <input type="file" name="product_image4" id="product_image4" class="form-control" 
-                required="required">
-            </div>
-
-            <!-- img-5 -->
-            <div class="form-outline mb-4 w-50 m-auto">
-                <label for="product_image5" class="form-label">Product Image 5</label>
-                <input type="file" name="product_image5" id="product_image5" class="form-control" 
-                required="required">
-            </div>
+        
 
              <!-- Pricing of product -->
              <div class="form-outline mb-4 w-50 m-auto">
